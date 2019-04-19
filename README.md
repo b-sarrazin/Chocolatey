@@ -1,6 +1,6 @@
 # Chocolatey
 
-A simple script to simplify the use of Chocolatey.
+A simple powershell script to simplify the use of Chocolatey.
 
 ## Getting Started
 
