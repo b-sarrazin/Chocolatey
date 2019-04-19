@@ -3,6 +3,7 @@
 
 $ChocoPackagesPath = ".\Packages.txt"
 
+# CHECK AND INSTALL CHOCOLATEY IF NOT PRESENT
 if (Get-Command choco.exe -ErrorAction SilentlyContinue)
 {
 	Write-Debug "Chocolatey installed"
@@ -17,6 +18,12 @@ else
 
 if (Test-Path $ChocoPackagesPath)
 {
+	# UPGRADE PACKAGES
+	Write-Host
+	Write-Host "Upgrading packages" -ForegroundColor Magenta
+	choco upgrade all -y
+	
+	# INSTALL NEW PACKAGES
 	[array]$PackagesToInstall = Get-Content $ChocoPackagesPath
 	[array]$PackagesInstalled = choco list -lo -r -y | ForEach-Object { $_.split('|')[0] }
 	
@@ -34,10 +41,7 @@ if (Test-Path $ChocoPackagesPath)
 		}
 	}
 	
-	Write-Host
-	Write-Host "Upgrading packages" -ForegroundColor Magenta
-	choco upgrade all -y
-	
+	# EXPORT PACKAGES LIST IN TEXT FILE
 	Write-Host
 	Write-Host "Exporting packages in : $ChocoPackagesPath" -ForegroundColor Magenta
 	choco list -lo -r -y | ForEach-Object {
@@ -46,6 +50,7 @@ if (Test-Path $ChocoPackagesPath)
 }
 else
 {
+	# CREATE TEXT FILE AND EXPORT PACKAGES LIST IN
 	New-Item $ChocoPackagesPath -ItemType file -Force | Out-Null
 	choco list -lo -r -y | ForEach-Object {
 		$_.split('|')[0]
